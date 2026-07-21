@@ -66,7 +66,7 @@ def load_model():
                 f"or incompletely downloaded (expected ~123 MB). "
             )
 
-        net = cv2.dnn.readNetFromCaffe(PROTO_FILE, MODEL_FILE)
+        net = cv2.dnn.readNet(PROTO_FILE, MODEL_FILE)
         pts = np.load(HULL_PTS)
 
         class8 = net.getLayerId("class8_ab")
