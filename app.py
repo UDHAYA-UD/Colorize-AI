@@ -93,6 +93,13 @@ def allowed_file(filename):
 
 def colorize_image(img_bgr):
     """Takes a BGR uint8 image, returns a BGR uint8 colorized image."""
+    # Resize image if it's too large to prevent Out-Of-Memory (OOM) on free servers
+    max_dim = 1200
+    h, w = img_bgr.shape[:2]
+    if max(h, w) > max_dim:
+        scale = max_dim / float(max(h, w))
+        img_bgr = cv2.resize(img_bgr, (int(w * scale), int(h * scale)))
+
     scaled = img_bgr.astype("float32") / 255.0
     lab_img = cv2.cvtColor(scaled, cv2.COLOR_BGR2LAB)
 

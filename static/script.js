@@ -80,6 +80,12 @@ colorizeBtn.addEventListener("click", async () => {
       method: "POST",
       body: formData,
     });
+    
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Server crashed or ran out of memory. Try uploading a smaller image.");
+    }
+
     const data = await res.json();
 
     if (!res.ok || !data.success) {
