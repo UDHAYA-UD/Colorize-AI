@@ -2,6 +2,7 @@ import os
 import io
 import base64
 import uuid
+import subprocess
 
 import numpy as np
 import cv2
@@ -38,6 +39,19 @@ model_error = None
 def load_model():
     global net, model_ready, model_error
     try:
+        # Check if model exists, if not, download it automatically
+        needs_download = False
+        if not os.path.exists(PROTO_FILE) or not os.path.exists(HULL_PTS) or not os.path.exists(MODEL_FILE):
+            needs_download = True
+        elif os.path.exists(MODEL_FILE) and os.path.getsize(MODEL_FILE) < MIN_MODEL_SIZE_BYTES:
+            needs_download = True
+        
+        if needs_download:
+            print("[colorizer] Model missing or corrupted. Downloading automatically (this may take a minute)...")
+            download_script = os.path.join(BASE_DIR, "model", "download_models.py")
+            subprocess.run(["python", download_script], check=True)
+            print("[colorizer] Download complete.")
+
         if not os.path.exists(PROTO_FILE):
             raise FileNotFoundError(f"Missing {PROTO_FILE}")
         if not os.path.exists(HULL_PTS):
@@ -50,7 +64,6 @@ def load_model():
             raise ValueError(
                 f"{MODEL_FILE} is only {model_size} bytes — looks corrupted "
                 f"or incompletely downloaded (expected ~123 MB). "
-                f"Re-run model/download_models.py."
             )
 
         net = cv2.dnn.readNetFromCaffe(PROTO_FILE, MODEL_FILE)
