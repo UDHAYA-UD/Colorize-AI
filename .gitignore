@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+uploads/*
+outputs/*
+!uploads/.gitkeep
+!outputs/.gitkeep
+
+# Large model weights — download separately, don't commit to git
+model/colorization_release_v2.caffemodel

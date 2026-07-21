@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colorize — B&W to Color</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-follower"></div>
+
+<div class="wrap neumorphic-panel">
+  <header>
+    <h1>Colorize</h1>
+    <p class="subtitle">Turn black &amp; white photos into color using a deep learning model.</p>
+  </header>
+
+  {% if not model_ready %}
+  <div class="banner banner-error">
+    <strong>Model not loaded on the server.</strong>
+    <span>{{ model_error }}</span>
+    <span>Run <code>python model/download_models.py</code> then restart the server.</span>
+  </div>
+  {% endif %}
+
+  <div class="dropzone" id="dropzone">
+    <div class="scanner" id="scanner" hidden></div>
+    <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp, image/bmp" hidden>
+    <div class="dropzone-content" id="dropzoneContent">
+      <div class="dz-icon">📷</div>
+      <p><strong>Click to upload</strong> or drag & drop</p>
+      <p class="dz-hint">PNG, JPG, WEBP, BMP</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="colorizeBtn" disabled>Colorize</button>
+    <button id="resetBtn" class="secondary" hidden>Try another</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="results" id="results" hidden>
+    <div class="result-card full-width">
+      <h3>Comparison</h3>
+      <p class="hint-text">Drag the slider to see before and after</p>
+      <div class="image-compare-container" id="compareContainer">
+        <img id="originalImg" alt="Original image" class="compare-img base-img">
+        <img id="colorizedImg" alt="Colorized image" class="compare-img overlay-img">
+        <div class="compare-handle" id="compareHandle">
+          <div class="handle-icon">◀ ▶</div>
+        </div>
+      </div>
+      <a id="downloadLink" download="colorized.png" class="download-btn" hidden>Download Colorized</a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
